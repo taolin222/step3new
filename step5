@@ -1,0 +1,46 @@
+ public void read(String csvFilepath) {
+        List<TradeBean> trades = new ArrayList<>();
+
+        String line;
+        String error = "";
+        boolean FirstLine = true;
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFilepath))) {
+            // データの読み取り
+            System.out.println("|" + "============================================================" + "|");
+            System.out.printf("| %-16s | %-4s | %-8s | %-8s | %-10s |", "Time", "Code", "Type", "quantity", "price");
+            System.out.println(" ");
+            System.out.println("|" + "------------------" + "+" + "------" + "+" + "----------" + "+" + "----------" + "+" + "------------" +
+                    "|");
+            while ((line = br.readLine()) != null) {
+                if (FirstLine) {
+                    FirstLine = false;
+                    continue; // 第一行をスキップする
+                }
+                //2023-09-26T14:30	0001	BUY	100	99
+                String[] data = line.split("\t");
+                TradeBean item = new TradeBean(data[0], data[1], data[2], Integer.parseInt(data[3]), data[4]);
+                trades.add(item);
+            }
+        } catch (IOException ex) {
+            System.out.println("読み取り失敗：読み取ったファイルが存在しない");
+            error = "読み取ったファイルが存在しない";
+        }
+        final String DataFormat = "| %-16s | %-4s | %-8s | %-8s | %-10s |\n";//列幅を設定する
+
+       
+        trades.sort(Comparator.comparing(TradeBean::getTradeTime).reversed());
+
+        for (TradeBean item : trades) {
+            System.out.printf(DataFormat,
+                    item.getTradeTime(),
+                    item.getCompanyCode(),
+                    item.getTradeType(),
+                    item.getQuantity(),
+                    item.getUnitPrice()
+            );
+        }
+        if (!error.equals("読み取ったファイルが存在しない")) {
+            System.out.println("==============================================================");
+        }
+
+    }
