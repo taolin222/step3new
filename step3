@@ -1,0 +1,137 @@
+package src;
+
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
+
+
+public class Step3 {
+
+    static List<Stock>stocks=new ArrayList<>();
+
+    public void input() {
+        Scanner scannerInput = new Scanner(System.in);
+        Stock stock = new Stock();
+        String csvPath="C:/Users/18356/Downloads/output.csv";
+        stocks=stock.Stocklist(csvPath);
+        if (!stocks.isEmpty()){
+        System.out.println("新規株式銘柄マスタを登録します");
+        String productNameInput=productNameCheck(scannerInput);
+
+        String codeInput=codeCheck(scannerInput);
+
+
+        Market marketInput=marketCheck(scannerInput);
+
+        long sharesIssuedInput=shareIssuedCheck(scannerInput);
+
+        stock.setCode(codeInput);
+        stock.setProductName(productNameInput);
+        stock.setMarket(marketInput);
+        stock.setShareIssued(sharesIssuedInput);
+        wirteToStock(csvPath,codeInput,productNameInput,marketInput,sharesIssuedInput);}
+        }
+
+
+    public String productNameCheck(Scanner scanner){
+        while (true) {
+            System.out.print("銘柄名> ");
+            String productName = scanner.nextLine().trim();
+            if (productName.isEmpty()||!productName.matches("^[a-z A-Z]+$")) {
+                System.out.println("銘柄名が入力されていないです。");
+            } else if (isUserProductnameRight(productName)) {
+                System.out.println("銘柄名が重複しています。");
+            } else {
+                return productName;
+            }
+        }
+    }
+    public String codeCheck(Scanner scanner) {
+        while (true) {
+            System.out.print("銘柄コード> ");
+            String code = scanner.nextLine().trim();
+            if (!code.matches("\\d{4}")) {
+                System.out.println("銘柄コードは4桁の半角数字で入力してください");
+            } else if (!code.matches("^[1-9]{1}\\d{3}")) {
+                System.out.println("正しいコードを入力してください");
+            } else if (isUserCodeRight(code)) {
+                System.out.println("入力したコードはすでに存在しています。");
+            } else {
+                return code;
+            }
+        }
+    }
+    public Market marketCheck(Scanner scanner){
+     while (true) {
+        System.out.print("上場市場> ");
+       String marketInput = scanner.nextLine().toUpperCase().trim();
+        if (!marketInput.equals("PRIME") && !marketInput.contains("GROWTH") && !marketInput.contains("STANDARD")) {
+            System.out.println("正しい上場市場を入力してください");
+        } else {
+            Market marekt=Market.valueOf(marketInput);
+            return marekt;
+        }
+    }
+    }
+    public long shareIssuedCheck(Scanner scanner){
+    while (true){
+        System.out.print("発行済み株式数> ");
+        String sharedissuesInput = scanner.nextLine().trim();
+        if (sharedissuesInput.length()>12||sharedissuesInput.contains("-")
+                ||!sharedissuesInput.matches("^[1-9]+\\d$")) {
+            System.out.println("正しい数値を入力してください");
+        } else if (sharedissuesInput.equals("0")) {
+            System.out.println("発行済み株式数は０ではない、正しい数値を入力してください");
+        } else if (sharedissuesInput.startsWith("-")){
+            System.out.println("発行済み株式数は負の値ではない、正しい数値を入力してください");
+        }
+        else if (sharedissuesInput.isEmpty()){
+            System.out.println("発行済み株式数は空白ではない、正しい数値を入力してください");
+        }else {
+            long sharedissues=Long.parseLong(sharedissuesInput);
+           return sharedissues;
+        }
+    }
+    }
+
+    public boolean isUserCodeRight(String codeInput){
+        boolean isRight=false;
+        for (int i=0;i<stocks.size();i++){
+            if(stocks.get(i).getCode().contains(codeInput)){
+                isRight=true;
+                break;
+            }
+        }
+        return isRight;
+    }
+    public boolean isUserProductnameRight(String productNameInput){
+        boolean isRight=false;
+        for (int i=0;i<stocks.size();i++){
+            if(stocks.get(i).getProductName().contains(productNameInput)){
+                isRight=true;
+                break;
+            }
+        }
+        return isRight;
+    }
+    public void wirteToStock(String csvFilepath, String code,
+                                String productName, Market market, long shareIssued) {
+        boolean isOutput=true;
+
+            // 登録された新規銘柄をcsvファイルの最後に書き込む
+            try (BufferedWriter Writer = new BufferedWriter(new FileWriter(csvFilepath, true))) {
+                String line;
+                line=String.join("\t", code, productName, market.toString(),
+                        String.valueOf(shareIssued));
+                Writer.write(line);
+                Writer.newLine();
+            } catch (IOException e) {
+                System.out.println("銘柄コードは4桁の半角数字で入力してください。");
+                isOutput=false;
+            }
+            if (isOutput){
+            System.out.println("\"" + productName + "\" を新規銘柄として登録しました。");}
+        }
+    }
