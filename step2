@@ -1,0 +1,52 @@
+import java.util.List;
+ public class Step2try {
+//    public static List<Stock> stocks = new ArrayList<>();
+        public void  informationOutput() {
+             // 替换为实际的CSV文件路径
+            //Path csvFilePath= Paths.get("C:/Users/18356/Downloads/output.csv");
+            System.out.println("|"+"=============================================================="+"|");
+            System.out.printf("| %-4s | %-25s | %-8s | %-14s |", "Code","Product Name", "Market", "Shares Issued");
+            System.out.println("");
+            System.out.println("|"+"------"+"+"+"---------------------------"+"+"+"----------"+
+                    "+"+"----------------"+"|");
+//            boolean isFirstLine = true;
+//            String error="";
+//            try (BufferedReader reader = Files.newBufferedReader(Paths.get("C:/Users/18356/Downloads/output.csv"),StandardCharsets.UTF_8)) {
+//                // 读取数据行并创建Stock对象
+//                for (String line;(line= reader.readLine()) != null;) {
+//                    if (isFirstLine){
+//                        isFirstLine=false;
+//                        continue;
+//                    }
+//                    String[] data = line.split("\t");
+//                    Market market = Market.valueOf(data[2]);
+//                    long shareIssued = Long.parseLong(data[3]);
+//                    Stock stock = new Stock();
+//                    stock.setCode(data[0]);
+//                    stock.setProductName(data[1]);
+//                    stock.setMarket(market);
+//                    stock.setShareIssued(shareIssued);
+//                    stocks.add(stock);
+//                }
+//            }catch (IOException ex){
+//               System.out.println("読み取ったファイル空白です");
+//                error="読み取ったファイル空白です";
+//            }
+            Stock stock=new Stock();
+            List<Stock>stocks;
+            stocks=stock.Stocklist("C:/Users/18356/Downloads/output.csv");
+            final String DataFormat= "| %-4s | %-25s | %-8s | %,14d |\n";
+            stock.printStocks(stocks,DataFormat);
+//            for(Stock stock:stocks){
+//            System.out.printf(DataFormat,stock.getCode(),
+//                    (stock.getProductName().length() <= 25) ? stock.getProductName() : (stock.getProductName().substring(0, 25- 3) + "..."),
+//                    stock.getMarket(),
+//                    stock.getShareIssued());}
+//            if (!error.equals("読み取ったファイル空白です")){
+//                System.out.println("================================================================");
+//            }
+    }
+
+    }
+
+
