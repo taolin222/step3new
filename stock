@@ -1,0 +1,87 @@
+package src;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Stock {
+    private String code;
+    private String productName;
+    private Market market;
+    private long shareIssued;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public Market getMarket() {
+        return market;
+    }
+
+    public void setMarket(Market market) {
+        this.market = market;
+    }
+
+    public long getShareIssued() {
+        return shareIssued;
+    }
+
+    public void setShareIssued(long shareIssued) {
+        this.shareIssued = shareIssued;
+    }
+     List<Stock>Stocklist(String csvPath){
+        List<Stock>stocks=new ArrayList<>();
+        boolean FirstLine = true;
+        try (BufferedReader reader = Files.newBufferedReader(Paths.get(csvPath),
+                StandardCharsets.UTF_8)) {
+            // 读取数据行并创建Stock对象
+            for (String line; (line = reader.readLine()) != null; ) {
+                if (FirstLine) {
+                    FirstLine = false;
+                    continue;
+                }
+                String[] data = line.split("\t");
+                Stock stock=new Stock();
+                Market market = Market.valueOf(data[2]);
+                long shareIssued = Long.parseLong(data[3]);
+                stock.setCode(data[0]);
+                stock.setProductName(data[1]);
+                stock.setMarket(market);
+                stock.setShareIssued(shareIssued);
+                stocks.add(stock);
+            }
+        } catch (IOException ex) {
+            System.out.println("読み取ったファイル空白です");
+        }
+        return stocks;
+    }
+    void printStocks(List<Stock> stocks, String dataFormata) {
+        for (Stock stock : stocks) {
+            System.out.printf(dataFormata, stock.getCode(),
+                    (stock.getProductName().length() <= 25) ? stock.getProductName() : (stock.getProductName().substring(0, 25 - 3) + "..."),
+                    stock.getMarket(),
+                    stock.getShareIssued());
+        }
+        if (!stocks.isEmpty()){
+        System.out.println("================================================================");}
+    }
+}
